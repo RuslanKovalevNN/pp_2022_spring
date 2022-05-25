@@ -13,7 +13,6 @@
 std::vector<int> getRandom(int N, int seed) {
   std::mt19937 gen;
   gen.seed(static_cast<unsigned int>(seed));
-
   std::vector<int> v(N);
 
   for (int i = 0; i < N ; i++) { v[i] = gen() % 100; }
