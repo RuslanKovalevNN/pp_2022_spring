@@ -114,17 +114,12 @@ void countingSort(std::vector<int>* arr, int size, int place) {
   const int max = 10;
   std::vector<int> output(size, 0);
   std::vector<int> count(max, 0);
-
   for (int i = 0; i < size; i++) count[(arr->at(i) / place) % 10]++;
-
-  int j;
   for (int j = 1; j < max; j++) count[j] += count[j - 1];
-
   for (int i = size - 1; i >= 0; i--) {
     output[count[(arr->at(i) / place) % 10] - 1] = arr->at(i);
     count[(arr->at(i) / place) % 10]--;
   }
-
   for (int i = 0; i < size; i++) arr->at(i) = output[i];
 }
 
@@ -140,7 +135,6 @@ void countingSortParallel(std::vector<int>* arr, int size, int place) {
                         pushMutex_1.lock();
                         count[(arr->at(i) / place) % 10]++;
                         pushMutex_1.unlock();
-                        int j;
                       }
     });
 
