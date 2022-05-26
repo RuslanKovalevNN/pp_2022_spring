@@ -31,8 +31,7 @@ struct Size2d {
 
 struct Scalar {
     uint8_t value;
-    Scalar() = default;
-    explicit Scalar(uint8_t _value) : value(_value) {}
+    explicit Scalar(uint8_t _value = 0) : value(_value) {}
 };
 
 class Mat {
