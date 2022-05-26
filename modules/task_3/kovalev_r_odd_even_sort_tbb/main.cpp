@@ -9,11 +9,11 @@ using std::vector;
 TEST(Parallel, Get_Max) {
   vector<int> vec_1(100);
   vector<int> vec_2(100);
-  vec_gen(&vec_1,100);
+  vec_gen(&vec_1, 100);
   vec_2 = vec_1;
   ParalleGetMax(&vec_1, 100);
   getMax(&vec_2, 100);
-  ASSERT_EQ(vec_1,vec_2);
+  ASSERT_EQ(vec_1, vec_2);
 }
 
 TEST(Parallel, Radix_Sort) {
