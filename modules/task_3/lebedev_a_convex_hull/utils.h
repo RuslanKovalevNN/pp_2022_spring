@@ -16,7 +16,7 @@ namespace lab3 {
 namespace image_utils {
 struct Point2d {
     double x, y;
-    Point2d() = default;
+    Point2d() : x(0.), y(0.) {}
     Point2d(double _x, double _y) : x(_x), y(_y) {}
     bool operator == (const Point2d& p) const {
         return x == p.x && y == p.y;
@@ -25,7 +25,7 @@ struct Point2d {
 
 struct Size2d {
     size_t width, height;
-    Size2d() = default;
+    Size2d() : width(0), height(0) {}
     Size2d(size_t _width, size_t _height) : width(_width), height(_height) {}
 };
 
