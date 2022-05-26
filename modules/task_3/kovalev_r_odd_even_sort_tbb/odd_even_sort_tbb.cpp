@@ -120,7 +120,9 @@ void countingSort(std::vector<int>* arr, int size, int place) {
     output[count[(arr->at(i) / place) % 10] - 1] = arr->at(i);
     count[(arr->at(i) / place) % 10]--;
   }
-  for (int i = 0; i < size; i++) arr->at(i) = output[i];
+  for (int i = 0; i < size; i++) {
+    arr->at(i) = output[i];
+  }
 }
 
 void countingSortParallel(std::vector<int>* arr, int size, int place) {
