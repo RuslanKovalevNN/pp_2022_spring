@@ -8,7 +8,11 @@ struct Partition {
     double center;
     double right;
 
-    Partition() = default;
+    Partition() :
+        left(0.0),
+        center(0.0),
+        right(0.0)
+    {};
     Partition(double _left, double _center, double _right) :
         left(_left),
         center(_center),

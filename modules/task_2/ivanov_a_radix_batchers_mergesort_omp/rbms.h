@@ -604,6 +604,8 @@ void radixBatchersMergeSort_v3(std::vector<T>* data, int degree) {
         #pragma omp barrier
         {}
     }
+    delete[] from;
+    delete[] to;
     if (isResized)
         data->resize(oldSize);
 }
