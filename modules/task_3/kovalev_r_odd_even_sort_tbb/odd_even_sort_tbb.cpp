@@ -32,66 +32,66 @@ bool check(std::vector<int>* arr_1, std::vector<int>* arr_2, int sz) {
   return true;
 }
 
-void Exchange(int& first, int& second) {
+void Exchange(int* first, int* second) {
   if (first > second) {
     swap(first, second);
   }
 }
 
-void Odd_Even_Split(vector<int>& arr, vector<int>& odd, vector<int>& even,
+void Odd_Even_Split(vector<int>* arr, vector<int>* odd, vector<int>* even,
                     int size) {
   for (int i = 0; i < size / 2; i++) {
-    odd[i] = arr[2 * i + 1];
-    even[i] = arr[2 * i];
+    odd->at(i) = arr->at(2 * i + 1);
+    even->at(i) = arr->at(2 * i);
   }
 }
 
-std::vector<int> Merge(std::vector<int>* arr_1, std::vector<int>* arr_2,
+void Merge(std::vector<int>* res,std::vector<int>* arr_1, std::vector<int>* arr_2,
                        int sz_1, int sz_2) {
   int i = 0;
   int j = 0;
   int k = 0;
-  std::vector<int> res(sz_1 + sz_2);
+  
   while (i < sz_1 && j < sz_2) {
     if (arr_1->at(i) < arr_2->at(j))
-      res[k++] = arr_1->at(i++);
+      res->at(k++) = arr_1->at(i++);
     else
-      res[k++] = arr_2->at(j++);
+      res->at(k++) = arr_2->at(j++);
   }
-  while (i < sz_1) res[k++] = arr_1->at(i++);
-  while (j < sz_2) res[k++] = arr_2->at(j++);
-  return res;
+  while (i < sz_1) res->at(k++) = arr_1->at(i++);
+  while (j < sz_2) res->at(k++) = arr_2->at(j++);
 }
 
 
-void Odd_Even_Split_Parallel(vector<int>& arr, vector<int>& odd,
-                               vector<int>& even, int size) {
+void Odd_Even_Split_Parallel(vector<int>* arr, vector<int>* odd,
+                               vector<int>* even, int size) {
+
   tbb::parallel_for(tbb::blocked_range<int>(0, size/2),
                     [&](const tbb::blocked_range<int>& range) {
                       for (int i = range.begin(); i != range.end(); i++) {
-                        odd[i] = arr[2 * i + 1];
-                        even[i] = arr[2 * i];
+                        odd->at(i) = arr->at(2 * i + 1);
+                        even->at(i) = arr->at(2 * i);
                       }
   });
 
 }
 
 
-void Odd_Even_Join(vector<int>& arr, vector<int>& odd, vector<int>& even,
+void Odd_Even_Join(vector<int>* arr, vector<int>* odd, vector<int>* even,
                    int size) {
   for (int i = 0; i < size / 2; i++) {
-    arr[2 * i + 1] = odd[i];
-    arr[2 * i] = even[i];
+    arr->at(2 * i + 1) = odd->at(i);
+    arr->at(2 * i) = even->at(i);
   }
 }
 
-void Odd_Even_Join_Parallel(vector<int>& arr, vector<int>& odd, vector<int>& even,
+void Odd_Even_Join_Parallel(vector<int>* arr, vector<int>* odd, vector<int>* even,
                    int size) {
   tbb::parallel_for(tbb::blocked_range<int>(0, size / 2),
                     [&](const tbb::blocked_range<int>& range) {
                       for (int i = range.begin(); i != range.end(); i++) {
-                        arr[2*i+1] = odd[i];
-                        arr[2*i] = even[i];
+                        arr->at(2*i+1) = odd->at(i);
+                        arr->at(2*i) = even->at(i);
                       }
                     });
 }
@@ -147,7 +147,7 @@ void countingSortParallel(std::vector<int>* arr, int size, int place) {
                         pushMutex_1.unlock();
                         int j;
                       }
-                    });
+    });
  
   tbb::mutex pushMutex_2;
   tbb::parallel_for(tbb::blocked_range<int>(1, max, 10),
@@ -169,25 +169,26 @@ void countingSortParallel(std::vector<int>* arr, int size, int place) {
                       for (int i = range.begin(); i < range.end(); i++) {
                         arr->at(i) = output[i];
                       }
-                    });
+    });
 }
 
-
-void Odd_Even_Merge(vector<int>& arr, int len) {
+void Odd_Even_Merge(vector<int>* arr, int len) {
   int odd_len = len / 2;
   int even_len = len - odd_len;
 
   vector<int> Odd(odd_len);
   vector<int> Even(even_len);
 
-  Odd_Even_Split(arr, Odd, Even, len);
+  Odd_Even_Split(arr, &Odd, &Even, len);
   getSequantialSort(&Odd, odd_len);
   getSequantialSort(&Even, even_len);
-  Odd_Even_Join(arr, Odd, Even, len);
-  arr = Merge(&Odd, &Even, odd_len, even_len);
-
-  for (int i = 1; i < len - 1; i+=2) {
-    Exchange(arr[i], arr[i + 1]);
+  Odd_Even_Join(arr, &Odd, &Even, len);
+  Merge(arr,&Odd, &Even, odd_len, even_len);
+  
+  for (int i = 1; i < len - 1; i += 2) {
+    if (arr->at(i) > arr->at(i + 1)) {
+      swap(arr[i], arr[i + 1]);
+    }
   }
 }
 
@@ -198,24 +199,26 @@ void getSortParallel(std::vector<int>* arr, int sz) {
     countingSortParallel(arr, sz, place);
 }
 
-void Odd_Even_Merge_Parallel(vector<int>& arr, int len) {
+void Odd_Even_Merge_Parallel(vector<int>* arr, int len) {
   int odd_len = len / 2;
   int even_len = len - odd_len;
 
   vector<int> Odd(odd_len);
   vector<int> Even(even_len);
 
-  Odd_Even_Split_Parallel(arr, Odd, Even, len);
+  Odd_Even_Split_Parallel(arr, &Odd, &Even, len);
   getSortParallel(&Odd, odd_len);
   getSortParallel(&Even, even_len);
-  arr = Merge(&Odd, &Even, odd_len, even_len);
+  Merge(arr,&Odd, &Even, odd_len, even_len);
 
-  tbb::parallel_for(tbb::blocked_range<int>(0, len-1,2),
+  tbb::parallel_for(tbb::blocked_range<int>(0 , len-1,2),
                     [&](const tbb::blocked_range<int>& range) {
                       for (int i = range.begin(); i != range.end(); i++) {
-                        Exchange(arr[i], arr[i + 1]);
+                        if (arr->at(i) > arr->at(i + 1)) {
+                          swap(arr->at(i), arr->at(i + 1));
+                        }
                       }
-   });
+    });
 }
 
 

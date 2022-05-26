@@ -40,8 +40,8 @@ TEST(Parallel, Odd_Even_Sort_1) {
   vector<int> vec_1(10);
   vec_gen(&vec_1, 10);
   vector<int> vec_2 = vec_1;
-  Odd_Even_Merge_Parallel(vec_1, 10);
-  Odd_Even_Merge(vec_2, 10);
+  Odd_Even_Merge_Parallel(&vec_1, 10);
+  Odd_Even_Merge(&vec_2, 10);
   ASSERT_EQ(vec_1, vec_2);
 }
 
@@ -50,8 +50,8 @@ TEST(Parallel, Odd_Even_Sort_2) {
   vector<int> vec_1(100);
   vec_gen(&vec_1, 100);
   vector<int> vec_2 = vec_1;
-  Odd_Even_Merge_Parallel(vec_1, 100);
-  Odd_Even_Merge(vec_2, 100);
+  Odd_Even_Merge_Parallel(&vec_1, 100);
+  Odd_Even_Merge(&vec_2, 100);
   ASSERT_EQ(vec_1, vec_2);
 }
 
