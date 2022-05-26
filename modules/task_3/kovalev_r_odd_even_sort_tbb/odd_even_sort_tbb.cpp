@@ -45,12 +45,11 @@ void Odd_Even_Split(std::vector<int>* arr, std::vector<int>* odd, std::vector<in
   }
 }
 
-void Merge(std::vector<int>* res,std::vector<int>* arr_1, std::vector<int>* arr_2,
+void Merge(std::vector<int>* res, std::vector<int>* arr_1, std::vector<int>* arr_2,
                        int sz_1, int sz_2) {
   int i = 0;
   int j = 0;
   int k = 0;
-  
   while (i < sz_1 && j < sz_2) {
     if (arr_1->at(i) < arr_2->at(j))
       res->at(k++) = arr_1->at(i++);
@@ -64,7 +63,6 @@ void Merge(std::vector<int>* res,std::vector<int>* arr_1, std::vector<int>* arr_
 
 void Odd_Even_Split_Parallel(std::vector<int>* arr, std::vector<int>* odd,
                                std::vector<int>* even, int size) {
-
   tbb::parallel_for(tbb::blocked_range<int>(0, size/2),
                     [&](const tbb::blocked_range<int>& range) {
                       for (int i = range.begin(); i != range.end(); i++) {
@@ -72,9 +70,7 @@ void Odd_Even_Split_Parallel(std::vector<int>* arr, std::vector<int>* odd,
                         even->at(i) = arr->at(2 * i);
                       }
   });
-
 }
-
 
 void Odd_Even_Join(std::vector<int>* arr, std::vector<int>* odd, std::vector<int>* even,
                    int size) {
@@ -103,7 +99,7 @@ int getMax(std::vector<int>* arr, int sz) {
   return max;
 }
 
-int ParalleGetMax(std::vector<int>* arr, int sz) { 
+int ParalleGetMax(std::vector<int>* arr, int sz) {
   int max = arr->at(0);
   tbb::parallel_for(tbb::blocked_range<int>(0, sz),
                     [&](const tbb::blocked_range<int>& range) {
@@ -162,7 +158,6 @@ void countingSortParallel(std::vector<int>* arr, int size, int place) {
     output[count[(arr->at(i) / place) % 10] - 1] = arr->at(i);
     count[(arr->at(i) / place) % 10]--;
   }
-  
   tbb::parallel_for(tbb::blocked_range<int>(0, size),
                     [&](const tbb::blocked_range<int>& range) {
                       for (int i = range.begin(); i < range.end(); i++) {
@@ -174,23 +169,19 @@ void countingSortParallel(std::vector<int>* arr, int size, int place) {
 void Odd_Even_Merge(std::vector<int>* arr, int len) {
   int odd_len = len / 2;
   int even_len = len - odd_len;
-
   std::vector<int> Odd(odd_len);
   std::vector<int> Even(even_len);
-
   Odd_Even_Split(arr, &Odd, &Even, len);
   getSequantialSort(&Odd, odd_len);
   getSequantialSort(&Even, even_len);
   Odd_Even_Join(arr, &Odd, &Even, len);
   Merge(arr, &Odd, &Even, odd_len, even_len);
-  
   for (int i = 1; i < len - 1; i += 2) {
     if (arr->at(i) > arr->at(i + 1)) {
       swap(arr[i], arr[i + 1]);
     }
   }
 }
-
 
 void getSortParallel(std::vector<int>* arr, int sz) {
   int max = ParalleGetMax(arr, sz);
