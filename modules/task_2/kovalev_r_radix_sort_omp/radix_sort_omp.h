@@ -8,7 +8,6 @@
 void vec_gen(std::vector<int>& vec, int len);
 std::vector<int> Odd_Even_Merge(const std::vector<int>& arr, int len);
 std::vector<int> getParallelRadixSort(const std::vector<int>& arr, int len);
-void countingSortParallel(std::vector<int>* arr, int size, int place);
 void countingSort(std::vector<int>* arr, int size, int place);
 std::vector<int> Odd_Even_Merge_Parallel(const std::vector<int>& arr, int len);
 

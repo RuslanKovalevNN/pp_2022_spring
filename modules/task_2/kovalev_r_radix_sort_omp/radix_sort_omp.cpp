@@ -51,7 +51,6 @@ void countingSort(std::vector<int> *array, int size, int place) {
   std::vector<int> output(size, 0);
   std::vector<int> count(max, 0);
   for (int i = 0; i < size; i++) count[(array->at(i) / place) % 10]++;
-  int j;
   for (int j = 1; j < max; j++) count[j] += count[j - 1];
 
   for (int i = size - 1; i >= 0; i--) {
@@ -61,49 +60,10 @@ void countingSort(std::vector<int> *array, int size, int place) {
   for (int i = 0; i < size; i++) array->at(i) = output[i];
 }
 
-void countingSortParallel(std::vector<int> *arr, int size, int place) {
-  const int max = 10;
-  std::vector<int> output(size, 0);
-  std::vector<int> count(max, 0);
-  int i;
-#pragma omp parallel shared(arr, count, place, size) private(i)
-  {
-#pragma omp for
-    for (i = 0; i < size; i++) count[(arr->at(i) / place) % 10]++;
-  }
-  int j;
-#pragma omp parallel shared(count, max) private(j)
-  {
-#pragma omp for
-    for (int j = 1; j < max; j++) count[j] += count[j - 1];
-  }
-  int k;
-#pragma omp parallel shared(arr, output, count, place, size) private(k)
-  {
-#pragma omp for
-    for (k = size - 1; k >= 0; k--) {
-      output[count[(arr->at(k) / place) % 10] - 1] = arr->at(k);
-      count[(arr->at(k) / place) % 10]--;
-    }
-  }
-  int d;
-#pragma omp parallel shared(arr, output, size) private(d)
-  {
-#pragma omp for
-    for (d = 0; d < size; d++) arr->at(d) = output[d];
-  }
-}
-
 void Sort(std::vector<int> *arr, int sz) {
   int max = getMax(arr, sz);
   for (int place = 1; max / place > 0; place *= 10)
     countingSort(arr, sz, place);
-}
-
-void SortParallel(std::vector<int> *arr, int sz) {
-  int max = getMax(arr, sz);
-  for (int place = 1; max / place > 0; place *= 10)
-    countingSortParallel(arr, sz, place);
 }
 
 void Odd_Even_Split_Parallel(const vector<int> &arr, vector<int> *odd,
