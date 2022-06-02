@@ -3,10 +3,10 @@
 #include <vector>
 #include <string>
 #include <random>
+#include <utility>
 #include <iostream>
 #include "../../../modules/task_2/kovalev_r_radix_sort_omp/radix_sort_omp.h"
 
-using namespace std;
 
 int getMax(std::vector<int> *arr, int sz) {
   int max = arr->at(0);
@@ -15,17 +15,11 @@ int getMax(std::vector<int> *arr, int sz) {
   return max;
 }
 
-void vec_gen(std::vector<int> &vec, int len) {
+void vec_gen(std::vector<int>* vec, int len) {
   std::random_device dev;
   std::mt19937 gen(dev());
   for (int i = 0; i < len; i++) {
-    vec[i] = gen() % 10000;
-  }
-}
-
-void Exchange(int &first, int &second) {
-  if (first > second) {
-    swap(first, second);
+    vec->at(i) = gen() % 10000;
   }
 }
 
@@ -66,8 +60,8 @@ void Sort(std::vector<int> *arr, int sz) {
     countingSort(arr, sz, place);
 }
 
-void Odd_Even_Split_Parallel(const vector<int> &arr, vector<int> *odd,
-                             vector<int> *even, int size) {
+void Odd_Even_Split_Parallel(const std::vector<int> &arr, std::vector<int> *odd,
+                             std::vector<int> *even, int size) {
   int i;
 #pragma omp parallel shared(arr, odd, even, size) private(i)
   {
@@ -79,7 +73,7 @@ void Odd_Even_Split_Parallel(const vector<int> &arr, vector<int> *odd,
   }
 }
 
-void Odd_Even_Split(const vector<int> &arr, vector<int> *odd, vector<int> *even,
+void Odd_Even_Split(const std::vector<int> &arr, std::vector<int> *odd, std::vector<int> *even,
                     int size) {
   for (int i = 0; i < size / 2; i++) {
     odd->at(i) = arr[2 * i + 1];
@@ -87,54 +81,33 @@ void Odd_Even_Split(const vector<int> &arr, vector<int> *odd, vector<int> *even,
   }
 }
 
-void Odd_Even_Join_Parallel(vector<int> &arr, vector<int> &odd,
-                            vector<int> &even, int size) {
-  int i;
-#pragma omp parallel shared(arr, odd, even, size) private(i)
-  {
-#pragma omp for
-    for (i = 0; i < size / 2; i++) {
-      arr[2 * i + 1] = odd[i];
-      arr[2 * i] = even[i];
-    }
-  }
-}
-
-void Odd_Even_Join(vector<int> &arr, vector<int> &odd, vector<int> &even,
-                   int size) {
-  for (int i = 0; i < size / 2; i++) {
-    arr[2 * i + 1] = odd[i];
-    arr[2 * i] = even[i];
-  }
-}
-
-vector<int> Odd_Even_Merge(const vector<int> &arr, int len) {
+std::vector<int> Odd_Even_Merge(const std::vector<int> &arr, int len) {
   int odd_len = len / 2;
   int even_len = len - odd_len;
-  vector<int> Odd(odd_len);
-  vector<int> Even(even_len);
+  std::vector<int> Odd(odd_len);
+  std::vector<int> Even(even_len);
   Odd_Even_Split(arr, &Odd, &Even, len);
   Sort(&Odd, odd_len);
   Sort(&Even, even_len);
-  vector<int> arr_1;
+  std::vector<int> arr_1;
   arr_1 = Merge(&Odd, &Even, odd_len, even_len);
   for (int i = 1; i < len - 1; i += 2) {
     if (arr_1[i] > arr_1[i + 1]) {
-      swap(arr_1[i], arr_1[i + 1]);
+      std::swap(arr_1[i], arr_1[i + 1]);
     }
   }
   return arr_1;
 }
 
-vector<int> getParallelRadixSort(const std::vector<int> &commonVector,
+std::vector<int> getParallelRadixSort(const std::vector<int> &commonVector,
                                  int lengt) {
   int numberOfThread = omp_get_num_procs();
   int dataPortion = commonVector.size() / numberOfThread;
-  vector<vector<int>> vecOfVec(numberOfThread);
+  std::vector<std::vector<int>> vecOfVec(numberOfThread);
 #pragma omp parallel num_threads(numberOfThread)
   {
     int currentThread = omp_get_thread_num();
-    vector<int> local;
+    std::vector<int> local;
     if (currentThread != numberOfThread - 1) {
       local = {commonVector.begin() + currentThread * dataPortion,
                commonVector.begin() + (currentThread + 1) * dataPortion};
@@ -146,7 +119,7 @@ vector<int> getParallelRadixSort(const std::vector<int> &commonVector,
     Sort(&local, len);
     vecOfVec[currentThread] = local;
   }
-  vector<int> resultVector = vecOfVec[0];
+  std::vector<int> resultVector = vecOfVec[0];
   for (int i = 1; i < numberOfThread; ++i) {
     int size_1 = resultVector.size();
     int size_2 = vecOfVec[i].size();
@@ -155,14 +128,14 @@ vector<int> getParallelRadixSort(const std::vector<int> &commonVector,
   return resultVector;
 }
 
-vector<int> Odd_Even_Merge_Parallel(const std::vector<int> &arr, int len) {
+std::vector<int> Odd_Even_Merge_Parallel(const std::vector<int> &arr, int len) {
   int odd_len = len / 2;
   int even_len = len - odd_len;
-  vector<int> Odd(odd_len);
-  vector<int> Even(even_len);
+  std::vector<int> Odd(odd_len);
+  std::vector<int> Even(even_len);
   Odd_Even_Split_Parallel(arr, &Odd, &Even, len);
   Odd = getParallelRadixSort(Odd, odd_len);
   Even = getParallelRadixSort(Even, even_len);
-  vector<int> result = Merge(&Odd, &Even, odd_len, even_len);
+  std::vector<int> result = Merge(&Odd, &Even, odd_len, even_len);
   return result;
 }
