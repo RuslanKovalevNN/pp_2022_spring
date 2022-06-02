@@ -89,15 +89,13 @@ Matrix Fox(const Matrix& a, const Matrix& b) {
   }
 
   const size_t MatrixSize = a.size();  // number of rows or coloumnt
-
   Matrix c(MatrixSize, MatrixRow(MatrixSize, 0));
   auto newA = a;
   auto newB = b;
   MatrixRow temp(MatrixSize, 0);
 
-  auto process = [](const TasksForProcess& tasks, Matrix& newA,
-                    const Matrix& newB, const int stage, Matrix& c,
-                    MatrixRow& temp, const Matrix& a) {
+  auto process = [](const TasksForProcess& tasks, Matrix& newA, Matrix newB,
+                    const int stage, Matrix& c, MatrixRow& temp, Matrix a) {
     const int n = a.size();
     for (const auto coordinat : tasks) {
       int i = coordinat.i;
@@ -132,31 +130,28 @@ Matrix Fox(const Matrix& a, const Matrix& b) {
   const size_t ProcessNum = init.default_num_threads();  // number of process
   tbb::blocked_range<size_t>(0, MatrixSize).grainsize();
 
-  TasksForManyProcesses tasks;
+  TasksForManyProcesses tasks(MatrixSize * MatrixSize);
   for (size_t i = 0; i < MatrixSize; ++i) {
     for (size_t j = 0; j < MatrixSize; ++j) {
       Cij new_task{i, j};
       if (tasks.empty()) {
-        TasksForProcess t{{new_task}};
-        tasks.push_back(t);
+        tasks.push_back({{new_task}});
       } else if (tasks.back().size() < number_of_tasks) {
         tasks.back().push_back(new_task);
       } else if (tasks.size() < ProcessNum) {
-        TasksForProcess t{{new_task}};
-        tasks.push_back(t);
+        tasks.push_back({{new_task}});
       } else {
         tasks.back().push_back(new_task);
       }
     }
   }
-  auto BlockedRange = tbb::blocked_range<size_t>(0, MatrixSize);
+  const auto BlockedRange = tbb::blocked_range<size_t>(0U, tasks.size());
 
   for (size_t stage = 0U; stage < MatrixSize; stage++) {
-    tbb::atomic<size_t> task_id{0};
-    tbb::parallel_for(BlockedRange, [&](tbb::blocked_range<size_t> r) {
-      size_t tid = task_id++;
-      if (tid >= tasks.size()) return;
-      process(tasks[tid], newA, newB, stage, c, temp, a);
+    tbb::parallel_for(BlockedRange, [&](tbb::blocked_range<size_t> const r) {
+      for (size_t tid{r.begin()}; tid < r.end(); tid++) {
+        process(tasks[tid], newA, newB, stage, c, temp, a);
+      }
     });
     for (const auto& task : tasks) {
       process_B(task, newB, temp);
