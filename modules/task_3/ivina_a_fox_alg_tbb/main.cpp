@@ -74,8 +74,8 @@ TEST(MatrixMultTBB, RandNumCompare10x10) {
   }
 }
 
-TEST(MatrixMultTBB, RandNumCompare500x500) {
-  const int n = 500;
+TEST(MatrixMultTBB, RandNumCompare100x100) {
+  const int n = 100;
   std::vector<std::vector<double>> MatrixA(n, std::vector<double>(n, 0));
   MatrixA = FillMatrixRandom(MatrixA);
   std::vector<std::vector<double>> MatrixB(n, std::vector<double>(n, 0));
