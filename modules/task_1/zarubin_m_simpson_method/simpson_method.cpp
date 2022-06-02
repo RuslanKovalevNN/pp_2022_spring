@@ -4,9 +4,9 @@
 #include "../../../modules/task_1/zarubin_m_simpson_method/simpson_method.h"
 
 struct Partition {
-    double left{};
-    double center{};
-    double right{};
+    double left;
+    double center;
+    double right;
 
     Partition() = default;
     Partition(double _left, double _center, double _right) :
