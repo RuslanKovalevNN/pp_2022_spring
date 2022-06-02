@@ -1,74 +1,95 @@
 // Copyright 2022 Kovalev Ruslan
 #include <gtest/gtest.h>
 
-#include <ctime>
+#include <time.h>
+#include <omp.h>
 #include <vector>
 
 #include "./kovalev_r_odd_even_sort_omp.h"
 
-TEST(Sequential_algorithm, radix_sort_1) {
-  int size = 100;
-  std::vector<int> arr_1(size);
-  std::vector<int> arr_2(size);
-  std::vector<int> arr_3(size);
-  vec_gen(&arr_1, size);
-  copy_vectors(&arr_1, &arr_2, size);
-  sort(arr_1.begin(), arr_1.end());
-  arr_3 = getParallelSort(arr_2);
-  bool res = check(&arr_1, &arr_3, size);
-  ASSERT_EQ(true, res);
+TEST(Sequential_algorithm, radix_sort_1) { 
+  int len = 40;
+  std::vector<int> vec_1(10000);
+  std::vector<int> vec_2(10000);
+  vec_gen(vec_1, 10000);
+  vec_2 = vec_1;
+  double start;
+  double end;
+  start = omp_get_wtime(); 
+  vec_1=Odd_Even_Merge_Parallel(vec_1, 10000);
+  end = omp_get_wtime();
+  start = omp_get_wtime(); 
+  vec_2=Odd_Even_Merge(vec_2, 10000);
+  end = omp_get_wtime();
+  ASSERT_EQ(vec_1,vec_2);
 }
 
 TEST(Sequential_algorithm, radix_sort_2) {
-  int size = 1000;
-  std::vector<int> arr_1(size);
-  std::vector<int> arr_2(size);
-  std::vector<int> arr_3(size);
-  vec_gen(&arr_1, size);
-  copy_vectors(&arr_1, &arr_2, size);
-  sort(arr_1.begin(), arr_1.end());
-  arr_3 = getParallelSort(arr_2);
-  bool res = check(&arr_1, &arr_3, size);
-  ASSERT_EQ(true, res);
+  int len = 40;
+  std::vector<int> vec_1(40000);
+  std::vector<int> vec_2(40000);
+  vec_gen(vec_1, 40000);
+  vec_2 = vec_1;
+  double start;
+  double end;
+  start = omp_get_wtime();
+  vec_1 = Odd_Even_Merge_Parallel(vec_1, 40000);
+  end = omp_get_wtime();
+  start = omp_get_wtime();
+  vec_2 = Odd_Even_Merge(vec_2, 40000);
+  end = omp_get_wtime();
+  ASSERT_EQ(vec_1, vec_2);
 }
 
 TEST(Sequential_algorithm, radix_sort_3) {
-  int size = 1001;
-  std::vector<int> arr_1(size);
-  std::vector<int> arr_2(size);
-  std::vector<int> arr_3(size);
-  vec_gen(&arr_1, size);
-  copy_vectors(&arr_1, &arr_2, size);
-  sort(arr_1.begin(), arr_1.end());
-  arr_3 = getParallelSort(arr_2);
-  bool res = check(&arr_1, &arr_3, size);
-  ASSERT_EQ(true, res);
+  int len = 40;
+  std::vector<int> vec_1(100);
+  std::vector<int> vec_2(100);
+  vec_gen(vec_1, 100);
+  vec_2 = vec_1;
+  double start;
+  double end;
+  start = omp_get_wtime();
+  vec_1 = Odd_Even_Merge_Parallel(vec_1, 100);
+  end = omp_get_wtime();
+  start = omp_get_wtime();
+  vec_2 = Odd_Even_Merge(vec_2, 100);
+  end = omp_get_wtime();
+  ASSERT_EQ(vec_1, vec_2);
 }
 
 TEST(Sequential_algorithm, radix_sort_4) {
-  int size = 333;
-  std::vector<int> arr_1(size);
-  std::vector<int> arr_2(size);
-  std::vector<int> arr_3(size);
-  vec_gen(&arr_1, size);
-  copy_vectors(&arr_1, &arr_2, size);
-  sort(arr_1.begin(), arr_1.end());
-  arr_3 = getParallelSort(arr_2);
-  bool res = check(&arr_1, &arr_3, size);
-  ASSERT_EQ(true, res);
+  int len = 40;
+  std::vector<int> vec_1(90);
+  std::vector<int> vec_2(90);
+  vec_gen(vec_1, 90);
+  vec_2 = vec_1;
+  double start;
+  double end;
+  start = omp_get_wtime();
+  vec_1 = Odd_Even_Merge_Parallel(vec_1, 90);
+  end = omp_get_wtime();
+  start = omp_get_wtime();
+  vec_2 = Odd_Even_Merge(vec_2, 90);
+  end = omp_get_wtime();
+  ASSERT_EQ(vec_1, vec_2);
 }
 
 TEST(Sequential_algorithm, radix_sort_5) {
-  int size = 624;
-  std::vector<int> arr_1(size);
-  std::vector<int> arr_2(size);
-  std::vector<int> arr_3(size);
-  vec_gen(&arr_1, size);
-  copy_vectors(&arr_1, &arr_2, size);
-  sort(arr_1.begin(), arr_1.end());
-  arr_3 = getParallelSort(arr_2);
-  bool res = check(&arr_1, &arr_3, size);
-  ASSERT_EQ(true, res);
+  int len = 40;
+  std::vector<int> vec_1(30);
+  std::vector<int> vec_2(30);
+  vec_gen(vec_1, 30);
+  vec_2 = vec_1;
+  double start;
+  double end;
+  start = omp_get_wtime();
+  vec_1 = Odd_Even_Merge_Parallel(vec_1, 30);
+  end = omp_get_wtime();
+  start = omp_get_wtime();
+  vec_2 = Odd_Even_Merge(vec_2, 30);
+  end = omp_get_wtime();
+  ASSERT_EQ(vec_1, vec_2);
 }
 
 int main(int argc, char **argv) {
