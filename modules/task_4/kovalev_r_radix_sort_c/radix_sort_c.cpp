@@ -133,7 +133,7 @@ std::vector<int> Odd_Even_Merge_Parallel(const std::vector<int> &arr, int len) {
   int even_len = len - odd_len;
   std::vector<int> Odd(odd_len);
   std::vector<int> Even(even_len);
-  Odd_Even_Split_Parallel(arr, &Odd, &Even, len);
+  Odd_Even_Split(arr, &Odd, &Even, len);
   Odd = getParallelRadixSort(&Odd, odd_len);
   Even = getParallelRadixSort(&Even, even_len);
   std::vector<int> result = Merge(&Odd, &Even, odd_len, even_len);
