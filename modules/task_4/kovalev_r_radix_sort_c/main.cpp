@@ -1,11 +1,10 @@
 // Copyright 2022 Kovalev Ruslan
 #include <gtest/gtest.h>
 #include <vector>
-#include <omp.h>
 #include "../../../3rdparty/unapproved/unapproved.h"
 #include "./radix_sort_c.h"
 
-TEST(Parallel_Operations_Std_Threads, Test_Radix_Sort_1) { 
+TEST(Parallel_Operations_Std_Threads, Test_Radix_Sort_1) {
   std::vector<int> arr_1(40);
   std::vector<int> arr_2(40);
   vec_gen(&arr_1, 40);
