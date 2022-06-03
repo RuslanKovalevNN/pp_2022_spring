@@ -53,14 +53,14 @@ TEST(Parallel_Operations_Std_Threads, Test_Radix_Sort_4) {
 }
 
 TEST(Parallel_Operations_Std_Threads, Test_Radix_Sort_5) {
-  std::vector<int> arr_1(400);
-  std::vector<int> arr_2(400);
-  vec_gen(&arr_1, 400);
+  std::vector<int> arr_1(45);
+  std::vector<int> arr_2(45);
+  vec_gen(&arr_1, 45);
   arr_2 = arr_1;
-  std::vector<int> arr_3(400);
-  std::vector<int> arr_4(400);
-  arr_3 = Odd_Even_Merge_Parallel(arr_1, 400);
-  arr_4 = Odd_Even_Merge(arr_2, 400);
+  std::vector<int> arr_3(45);
+  std::vector<int> arr_4(45);
+  arr_3 = Odd_Even_Merge_Parallel(arr_1, 45);
+  arr_4 = Odd_Even_Merge(arr_2, 45);
   ASSERT_EQ(arr_3, arr_4);
 }
 
