@@ -1,9 +1,10 @@
 // Copyright 2022 Kovalev Ruslan
+#include <vector>
+#include <string>
 #include <utility>
 #include <random>
-#include <vector>
-#include <random>
 #include <iostream>
+#include <algorithm>
 #include "../../../modules/task_4/kovalev_r_radix_sort_c/radix_sort_c.h"
 #include "../../../3rdparty/unapproved/unapproved.h"
 int getMax(std::vector<int> *arr, int sz) {
@@ -119,7 +120,7 @@ std::vector<int> getParallelRadixSort(std::vector<int>* vec, int size) {
   for (int i = 1; i < number_threads; i++) {
     int sz_0 = data[0].size();
     int sz_1 = data[1].size();
-    data[0] = Merge(&data[0], &data[i], sz_0,sz_1);
+    data[0] = Merge(&data[0], &data[i], sz_0, sz_1);
   }
 
   delete[] threads;
